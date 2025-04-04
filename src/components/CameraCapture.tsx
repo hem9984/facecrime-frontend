@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Camera, Upload, X } from 'lucide-react';
+import { Camera, Upload, X, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -129,13 +129,16 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
             alt="Captured" 
             className="w-full max-h-[400px] object-contain border border-gray-300" 
           />
-          <button 
-            onClick={resetCapture}
-            className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full"
-            aria-label="Reset capture"
-          >
-            <X size={18} />
-          </button>
+          <div className="flex justify-between mt-2">
+            <Button 
+              onClick={resetCapture}
+              variant="outline"
+              className="flex items-center gap-2 text-red-600 border-red-600 hover:bg-red-50"
+            >
+              <RefreshCcw size={16} />
+              <span>Retake Photo</span>
+            </Button>
+          </div>
         </div>
       ) : (
         <div className="relative">
@@ -150,13 +153,24 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
                   className="w-full h-[300px] object-cover border border-gray-300 bg-black"
                 />
                 <div className="scanning-line"></div>
+                <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2 text-white text-center text-sm">
+                  Camera is active - position your face in frame
+                </div>
               </div>
-              <div className="flex justify-center mt-3">
+              <div className="flex justify-center gap-4 mt-3">
                 <Button 
                   onClick={captureImage}
-                  className="official-btn"
+                  className="official-btn flex items-center gap-2"
                 >
-                  Capture Image
+                  <Camera size={18} />
+                  <span>Take Photo</span>
+                </Button>
+                <Button 
+                  onClick={stopCamera}
+                  variant="outline"
+                  className="border-red-600 text-red-600 hover:bg-red-50"
+                >
+                  Cancel
                 </Button>
               </div>
             </>
@@ -172,7 +186,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
                   disabled={hasPermission === false}
                 >
                   <Camera size={18} />
-                  <span>Activate Camera</span>
+                  <span>Take Photo</span>
                 </Button>
                 <Button 
                   onClick={handleUploadClick}
