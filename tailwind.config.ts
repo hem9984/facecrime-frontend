@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				fbi: {
+					navy: "#0D1A3D", 
+					darkblue: "#061F5C",
+					gold: "#D6AF36",
+					red: "#A91B0D",
+					gray: "#333333",
+					lightgray: "#F0F0F0"
 				}
 			},
 			borderRadius: {
@@ -84,11 +93,22 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'scanning': {
+					'0%': { transform: 'translateY(0%)' },
+					'50%': { transform: 'translateY(100%)' },
+					'100%': { transform: 'translateY(0%)' }
+				},
+				'pulse-red': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.5' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'scanning': 'scanning 2s ease-in-out infinite',
+				'pulse-red': 'pulse-red 2s ease-in-out infinite'
 			}
 		}
 	},
