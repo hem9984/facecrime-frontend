@@ -16,7 +16,7 @@ export const recognizeFace = async (imageData: string): Promise<RecognitionResul
   
   // Generate a fake base64 image by modifying the original
   // In a real app, this would be returned by the server
-  const processedImage = addFilterToImage(imageData);
+  const processedImage = await addFilterToImage(imageData);
   
   // Return mock data
   return {
@@ -29,7 +29,7 @@ export const recognizeFace = async (imageData: string): Promise<RecognitionResul
 
 // Function to add a simple filter to the image to simulate processing
 // In a real app, the backend would return a completely different image
-const addFilterToImage = (imageData: string): string => {
+const addFilterToImage = (imageData: string): Promise<string> => {
   const canvas = document.createElement('canvas');
   const img = document.createElement('img');
   
