@@ -26,6 +26,9 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
       
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play();
+        };
         setStream(mediaStream);
         setIsCameraActive(true);
         setHasPermission(true);
@@ -50,25 +53,36 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       
+      console.log("Capturing image...");
+      console.log("Video dimensions:", video.videoWidth, video.videoHeight);
+      
       // Set canvas dimensions to match video
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
       
       // Draw video frame to canvas
       const context = canvas.getContext('2d');
       if (context) {
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        // Get data URL from canvas
-        const imageDataUrl = canvas.toDataURL('image/jpeg');
-        setCapturedImage(imageDataUrl);
-        
-        // Pass the captured image up
-        onImageCapture(imageDataUrl);
-        
-        // Stop the camera
-        stopCamera();
+        try {
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          
+          // Get data URL from canvas
+          const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+          console.log("Image captured successfully");
+          setCapturedImage(imageDataUrl);
+          
+          // Pass the captured image up
+          onImageCapture(imageDataUrl);
+          
+          // Stop the camera
+          stopCamera();
+        } catch (error) {
+          console.error("Error capturing image:", error);
+          toast.error("Failed to capture image. Please try again.");
+        }
       }
+    } else {
+      console.error("Video or canvas ref is null");
     }
   };
   
