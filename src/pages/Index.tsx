@@ -90,7 +90,7 @@ const Index = () => {
               FACECRIME RECON PORTAL | CONFIDENTIAL
             </p>
             <p className="text-xs text-gray-400 mt-1">
-              UNAUTHORIZED ACCESS Will BE PUNISHED
+              UNAUTHORIZED ACCESS WIll BE PUNISHED
             </p>
           </div>
         </div>
