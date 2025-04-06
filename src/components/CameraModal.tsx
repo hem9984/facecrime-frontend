@@ -10,6 +10,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import Pica from 'pica';
 
 interface CameraModalProps {
   isOpen: boolean;
@@ -20,8 +21,12 @@ interface CameraModalProps {
 const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const resizeCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
+  
+  // Initialize pica instance
+  const pica = new Pica();
 
   useEffect(() => {
     // Start camera when modal opens
@@ -67,7 +72,28 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
     }
   };
 
-  const captureImage = () => {
+  const resizeImage = async (sourceCanvas: HTMLCanvasElement): Promise<string> => {
+    try {
+      if (!resizeCanvasRef.current) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 224;
+        canvas.height = 224;
+        resizeCanvasRef.current = canvas;
+      }
+      
+      const destCanvas = resizeCanvasRef.current;
+      destCanvas.width = 224;
+      destCanvas.height = 224;
+      
+      await pica.resize(sourceCanvas, destCanvas);
+      return destCanvas.toDataURL('image/jpeg', 0.9);
+    } catch (error) {
+      console.error('Image resize error:', error);
+      return sourceCanvas.toDataURL('image/jpeg', 0.9);
+    }
+  };
+
+  const captureImage = async () => {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
@@ -82,11 +108,11 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
         try {
           context.drawImage(video, 0, 0, canvas.width, canvas.height);
           
-          // Get data URL from canvas
-          const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+          // Resize image to 224x224
+          const resizedImageDataUrl = await resizeImage(canvas);
           
-          // Send captured image to parent
-          onCapture(imageDataUrl);
+          // Send captured and resized image to parent
+          onCapture(resizedImageDataUrl);
           
           // Close modal and stop camera
           stopCamera();
