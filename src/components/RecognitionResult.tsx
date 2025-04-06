@@ -38,6 +38,9 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
 
   // Round the match percentage to whole number
   const matchPercentFormatted = Math.round(subject.matchPercent * 100);
+  
+  // Check if we have a valid image from the API
+  const hasValidImage = subject.image && subject.image.length > 0;
 
   return (
     <div className="fbi-panel relative">
@@ -48,16 +51,22 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
       
       <div className="relative mb-4">
         <div className="absolute top-4 left-4 py-1 px-3 bg-fbi-red/90 text-white text-xs tracking-wider">
-          MATCH FOUND
+          {hasValidImage ? "MATCH FOUND" : "NO IMAGE AVAILABLE"}
         </div>
         <div className="absolute top-4 right-4 py-1 px-3 bg-fbi-navy/90 text-white text-xs tracking-wider">
           {matchPercentFormatted}% MATCH
         </div>
-        <img 
-          src={subject.image.startsWith('data:image') ? subject.image : `data:image/jpeg;base64,${subject.image}`}
-          alt="Subject" 
-          className="w-full h-[250px] object-cover object-center border border-gray-300"
-        />
+        {hasValidImage ? (
+          <img 
+            src={subject.image.startsWith('data:image') ? subject.image : `data:image/jpeg;base64,${subject.image}`}
+            alt="Subject" 
+            className="w-full h-[250px] object-cover object-center border border-gray-300"
+          />
+        ) : (
+          <div className="w-full h-[250px] bg-fbi-lightgray border border-gray-300 flex items-center justify-center">
+            <p className="text-fbi-gray">No subject image available</p>
+          </div>
+        )}
       </div>
 
       <div className="space-y-3 relative">
