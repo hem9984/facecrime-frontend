@@ -15,8 +15,14 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [showCameraModal, setShowCameraModal] = useState(false);
   
-  // Initialize pica instance
-  const pica = new Pica();
+  // Initialize pica instance with Lanczos filter
+  const pica = new Pica({
+    features: ['js', 'wasm', 'ww'],
+    alpha: true,
+    unsharpAmount: 80,
+    unsharpRadius: 0.6,
+    unsharpThreshold: 2
+  });
   
   const resizeImage = async (imageDataUrl: string): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -37,8 +43,10 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
           destCanvas.width = 224;
           destCanvas.height = 224;
           
-          // Resize image using pica
-          await pica.resize(sourceCanvas, destCanvas);
+          // Resize image using pica with Lanczos3 filter
+          await pica.resize(sourceCanvas, destCanvas, {
+            filter: 'lanczos3'
+          });
           
           // Get data URL from resized image
           const resizedImageDataUrl = destCanvas.toDataURL('image/jpeg', 0.9);

@@ -24,10 +24,16 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
   const resizeCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
-  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
   
-  // Initialize pica instance
-  const pica = new Pica();
+  // Initialize pica instance with Lanczos filter
+  const pica = new Pica({
+    features: ['js', 'wasm', 'ww'],
+    alpha: true,
+    unsharpAmount: 80,
+    unsharpRadius: 0.6,
+    unsharpThreshold: 2
+  });
 
   useEffect(() => {
     // Start camera when modal opens
@@ -96,7 +102,11 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
       destCanvas.width = 224;
       destCanvas.height = 224;
       
-      await pica.resize(sourceCanvas, destCanvas);
+      // Use LANCZOS by setting the filter to lanczos3 (Lanczos with a=3)
+      await pica.resize(sourceCanvas, destCanvas, {
+        filter: 'lanczos3'
+      });
+      
       return destCanvas.toDataURL('image/jpeg', 0.9);
     } catch (error) {
       console.error('Image resize error:', error);
@@ -119,7 +129,7 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
         try {
           context.drawImage(video, 0, 0, canvas.width, canvas.height);
           
-          // Resize image to 224x224
+          // Resize image to 224x224 using Lanczos
           const resizedImageDataUrl = await resizeImage(canvas);
           
           // Send captured and resized image to parent
