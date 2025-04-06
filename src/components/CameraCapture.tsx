@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import CameraModal from './CameraModal';
 import Pica from 'pica';
+import { removeBackground } from '@imgly/background-removal';
+import { Loader2 } from 'lucide-react';
 
 interface CameraCaptureProps {
   onImageCapture: (image: string) => void;
@@ -14,6 +16,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [showCameraModal, setShowCameraModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   
   // Initialize pica instance with Lanczos filter
   const pica = new Pica({
@@ -66,6 +69,45 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
       img.src = imageDataUrl;
     });
   };
+
+  const processWithBackgroundRemoval = async (imageDataUrl: string): Promise<string> => {
+    try {
+      setIsProcessing(true);
+      toast.info("Removing background, please wait...");
+
+      // Create an image element from the data URL
+      const img = new Image();
+      const loadPromise = new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("Failed to load image"));
+        img.src = imageDataUrl;
+      });
+      await loadPromise;
+
+      // Use the removeBackground function from the library
+      const blob = await removeBackground(img, {
+        output: {
+          format: 'image/png',
+          quality: 0.8,
+        },
+      });
+
+      // Convert blob to data URL
+      const resultDataUrl = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(blob);
+      });
+
+      return resultDataUrl;
+    } catch (error) {
+      console.error('Background removal failed:', error);
+      toast.error("Background removal failed. Using original image.");
+      return imageDataUrl;
+    } finally {
+      setIsProcessing(false);
+    }
+  };
   
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -80,14 +122,22 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
       reader.onload = async (e) => {
         if (e.target?.result) {
           try {
+            setIsProcessing(true);
             const imageDataUrl = e.target.result.toString();
-            const resizedImageDataUrl = await resizeImage(imageDataUrl);
+            
+            // First remove background
+            const bgRemovedImageUrl = await processWithBackgroundRemoval(imageDataUrl);
+            
+            // Then resize to required dimensions
+            const resizedImageDataUrl = await resizeImage(bgRemovedImageUrl);
             
             setCapturedImage(resizedImageDataUrl);
             onImageCapture(resizedImageDataUrl);
           } catch (error) {
             console.error('Error processing image:', error);
             toast.error("Failed to process image.");
+          } finally {
+            setIsProcessing(false);
           }
         }
       };
@@ -108,12 +158,20 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
 
   const handleCameraCapture = async (imageData: string) => {
     try {
-      const resizedImageData = await resizeImage(imageData);
-      setCapturedImage(resizedImageData);
-      onImageCapture(resizedImageData);
+      setIsProcessing(true);
+      // First remove background
+      const bgRemovedImageUrl = await processWithBackgroundRemoval(imageData);
+      
+      // Then resize to required dimensions
+      const resizedImageDataUrl = await resizeImage(bgRemovedImageUrl);
+      
+      setCapturedImage(resizedImageDataUrl);
+      onImageCapture(resizedImageDataUrl);
     } catch (error) {
       console.error('Error processing camera capture:', error);
       toast.error("Failed to process image.");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -150,25 +208,34 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
       ) : (
         <div className="relative">
           <div className="border border-gray-300 bg-fbi-lightgray h-[300px] flex items-center justify-center flex-col p-4">
-            <p className="mb-6 text-center text-fbi-gray">
-              Please capture an image or upload a photo to identify the subject
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center mt-2">
-              <Button 
-                onClick={openCameraModal}
-                className="official-btn flex items-center gap-2"
-              >
-                <Camera size={18} />
-                <span>Take Photo</span>
-              </Button>
-              <Button 
-                onClick={handleUploadClick}
-                className="bg-fbi-gray text-white hover:bg-gray-600 flex items-center gap-2"
-              >
-                <Upload size={18} />
-                <span>Upload Image</span>
-              </Button>
-            </div>
+            {isProcessing ? (
+              <div className="flex flex-col items-center">
+                <Loader2 size={40} className="animate-spin text-fbi-navy mb-4" />
+                <p className="text-center text-fbi-gray">Processing image...</p>
+              </div>
+            ) : (
+              <>
+                <p className="mb-6 text-center text-fbi-gray">
+                  Please capture an image or upload a photo to identify the subject
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center mt-2">
+                  <Button 
+                    onClick={openCameraModal}
+                    className="official-btn flex items-center gap-2"
+                  >
+                    <Camera size={18} />
+                    <span>Take Photo</span>
+                  </Button>
+                  <Button 
+                    onClick={handleUploadClick}
+                    className="bg-fbi-gray text-white hover:bg-gray-600 flex items-center gap-2"
+                  >
+                    <Upload size={18} />
+                    <span>Upload Image</span>
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
           <input
             type="file"
