@@ -18,6 +18,7 @@ const Index = () => {
     hairColor: string;
     eyeColor: string;
     race: string;
+    sexOffender: boolean;
   } | null>(null);
 
   const handleImageCapture = (image: string) => {
@@ -33,7 +34,11 @@ const Index = () => {
 
     try {
       setIsProcessing(true);
-      const result = await recognizeFace(capturedImage);
+      
+      // Extract base64 string from data URL if needed
+      const base64Image = capturedImage.split(',')[1] || capturedImage;
+      
+      const result = await recognizeFace(base64Image);
       setRecognitionResult(result);
       toast.success("Recognition complete.");
     } catch (error) {

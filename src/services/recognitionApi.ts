@@ -1,13 +1,15 @@
+
 // Mock recognition API service
 
 interface RecognitionResult {
-  image: string;
+  image: string; // This will be base64 encoded string
   offense: string;
   height: string;
   weight: string;
   hairColor: string;
   eyeColor: string;
   race: string;
+  sexOffender: boolean; // Added sex offender status
 }
 
 // This function simulates sending the image to a backend service
@@ -16,19 +18,19 @@ export const recognizeFace = async (imageData: string): Promise<RecognitionResul
   // Simulate API processing time
   await new Promise(resolve => setTimeout(resolve, 2000));
   
-  // Generate a fake base64 image by modifying the original
-  // In a real app, this would be returned by the server
-  const processedImage = await addFilterToImage(imageData);
+  // In a real app, the backend would return a completely different image
+  // Here we're just using the same image for demonstration
   
   // Return mock data
   return {
-    image: processedImage,
+    image: imageData, // Use the submitted image as temporary placeholder
     offense: "Thoughtcrime, Infosec Protocol Violations, District-7 Regulations",
     height: "6'1\"",
     weight: "185 lbs",
     hairColor: "Brown",
     eyeColor: "Blue",
-    race: "Caucasian"
+    race: "Caucasian",
+    sexOffender: true // Mock data for sex offender status
   };
 };
 

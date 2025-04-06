@@ -9,6 +9,7 @@ interface Subject {
   hairColor: string;
   eyeColor: string;
   race: string;
+  sexOffender: boolean;
 }
 
 interface RecognitionResultProps {
@@ -46,7 +47,7 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
           MATCH FOUND
         </div>
         <img 
-          src={subject.image} 
+          src={`data:image/jpeg;base64,${subject.image}`} 
           alt="Subject" 
           className="w-full h-[250px] object-cover object-center border border-gray-300"
         />
@@ -65,6 +66,17 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
         <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
           <div className="font-semibold text-fbi-gray">Offense:</div>
           <div className="font-mono text-red-600">{subject.offense}</div>
+        </div>
+
+        {/* Added Sex Offender Status */}
+        <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
+          <div className="font-semibold text-fbi-gray">Sex Offender:</div>
+          <div className="font-mono">
+            {subject.sexOffender ? 
+              <span className="bg-red-100 text-red-700 px-2 py-1 rounded font-bold">REGISTERED</span> : 
+              <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded">Not Registered</span>
+            }
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-x-4 gap-y-2 border-b border-gray-200 py-2">
