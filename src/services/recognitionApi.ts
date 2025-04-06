@@ -10,6 +10,7 @@ interface RecognitionResult {
   eyeColor: string;
   race: string;
   sexOffender: boolean; // Added sex offender status
+  matchPercent: number; // Added match percentage as a decimal
 }
 
 // This function simulates sending the image to a backend service
@@ -30,7 +31,8 @@ export const recognizeFace = async (imageData: string): Promise<RecognitionResul
     hairColor: "Brown",
     eyeColor: "Blue",
     race: "Caucasian",
-    sexOffender: true // Mock data for sex offender status
+    sexOffender: true, // Mock data for sex offender status
+    matchPercent: 0.677 // Mock data for match percentage (67.7%)
   };
 };
 

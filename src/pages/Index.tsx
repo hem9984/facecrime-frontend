@@ -19,6 +19,7 @@ const Index = () => {
     eyeColor: string;
     race: string;
     sexOffender: boolean;
+    matchPercent: number; // Added match percentage field
   } | null>(null);
 
   const handleImageCapture = (image: string) => {

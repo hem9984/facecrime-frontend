@@ -10,6 +10,7 @@ interface Subject {
   eyeColor: string;
   race: string;
   sexOffender: boolean;
+  matchPercent: number; // Added match percentage field
 }
 
 interface RecognitionResultProps {
@@ -35,6 +36,9 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
     );
   }
 
+  // Round the match percentage to whole number
+  const matchPercentFormatted = Math.round(subject.matchPercent * 100);
+
   return (
     <div className="fbi-panel relative">
       <h2 className="text-lg font-semibold mb-3 text-fbi-navy flex items-center">
@@ -45,6 +49,10 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
       <div className="relative mb-4">
         <div className="absolute top-4 left-4 py-1 px-3 bg-fbi-red/90 text-white text-xs tracking-wider">
           MATCH FOUND
+        </div>
+        {/* Add match percentage badge */}
+        <div className="absolute top-4 right-4 py-1 px-3 bg-fbi-navy/90 text-white text-xs tracking-wider">
+          {matchPercentFormatted}% MATCH
         </div>
         <img 
           src={`data:image/jpeg;base64,${subject.image}`} 
