@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Subject {
   image: string;
@@ -19,6 +20,8 @@ interface RecognitionResultProps {
 }
 
 const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoading }) => {
+  const isMobile = useIsMobile();
+  
   if (isLoading) {
     return (
       <div className="fbi-panel h-full min-h-[250px] flex flex-col justify-center items-center">
@@ -99,28 +102,55 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-4 gap-y-2 border-b border-gray-200 py-2">
-          <div className="grid grid-cols-[100px_1fr] gap-1">
-            <div className="font-semibold text-fbi-gray">Height:</div>
-            <div className="font-mono">{subject.height}</div>
+        {isMobile ? (
+          // Mobile layout - stack all physical details vertically
+          <div className="border-b border-gray-200 py-2 space-y-2">
+            <div className="grid grid-cols-[110px_1fr] gap-1">
+              <div className="font-semibold text-fbi-gray">Height:</div>
+              <div className="font-mono">{subject.height}</div>
+            </div>
+            <div className="grid grid-cols-[110px_1fr] gap-1">
+              <div className="font-semibold text-fbi-gray">Weight:</div>
+              <div className="font-mono">{subject.weight}</div>
+            </div>
+            <div className="grid grid-cols-[110px_1fr] gap-1">
+              <div className="font-semibold text-fbi-gray">Hair:</div>
+              <div className="font-mono">{subject.hairColor}</div>
+            </div>
+            <div className="grid grid-cols-[110px_1fr] gap-1">
+              <div className="font-semibold text-fbi-gray">Eyes:</div>
+              <div className="font-mono">{subject.eyeColor}</div>
+            </div>
+            <div className="grid grid-cols-[110px_1fr] gap-1">
+              <div className="font-semibold text-fbi-gray">Race:</div>
+              <div className="font-mono">{subject.race}</div>
+            </div>
           </div>
-          <div className="grid grid-cols-[100px_1fr] gap-1">
-            <div className="font-semibold text-fbi-gray">Weight:</div>
-            <div className="font-mono">{subject.weight}</div>
+        ) : (
+          // Desktop layout - 2 columns
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2 border-b border-gray-200 py-2">
+            <div className="grid grid-cols-[100px_1fr] gap-1">
+              <div className="font-semibold text-fbi-gray">Height:</div>
+              <div className="font-mono">{subject.height}</div>
+            </div>
+            <div className="grid grid-cols-[100px_1fr] gap-1">
+              <div className="font-semibold text-fbi-gray">Weight:</div>
+              <div className="font-mono">{subject.weight}</div>
+            </div>
+            <div className="grid grid-cols-[100px_1fr] gap-1">
+              <div className="font-semibold text-fbi-gray">Hair:</div>
+              <div className="font-mono">{subject.hairColor}</div>
+            </div>
+            <div className="grid grid-cols-[100px_1fr] gap-1">
+              <div className="font-semibold text-fbi-gray">Eyes:</div>
+              <div className="font-mono">{subject.eyeColor}</div>
+            </div>
+            <div className="grid grid-cols-[100px_1fr] gap-1">
+              <div className="font-semibold text-fbi-gray">Race:</div>
+              <div className="font-mono">{subject.race}</div>
+            </div>
           </div>
-          <div className="grid grid-cols-[100px_1fr] gap-1">
-            <div className="font-semibold text-fbi-gray">Hair:</div>
-            <div className="font-mono">{subject.hairColor}</div>
-          </div>
-          <div className="grid grid-cols-[100px_1fr] gap-1">
-            <div className="font-semibold text-fbi-gray">Eyes:</div>
-            <div className="font-mono">{subject.eyeColor}</div>
-          </div>
-          <div className="grid grid-cols-[100px_1fr] gap-1">
-            <div className="font-semibold text-fbi-gray">Race:</div>
-            <div className="font-mono">{subject.race}</div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
