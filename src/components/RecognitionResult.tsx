@@ -58,9 +58,6 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
       </h2>
       
       <div className="relative mb-4">
-        <div className="absolute top-4 left-4 py-1 px-3 bg-fbi-red/90 text-white text-xs tracking-wider">
-          {hasValidImage ? "MATCH FOUND" : "NO IMAGE AVAILABLE"}
-        </div>
         <div className="absolute top-4 right-4 py-1 px-3 bg-fbi-navy/90 text-white text-xs tracking-wider">
           {matchPercentFormatted}% MATCH
         </div>
