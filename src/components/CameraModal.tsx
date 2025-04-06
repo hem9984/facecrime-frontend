@@ -153,7 +153,7 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
           />
           {cameraActive && (
             <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2 text-white text-xs text-center">
-              Position your face in frame
+              Position the face in frame
             </div>
           )}
           
