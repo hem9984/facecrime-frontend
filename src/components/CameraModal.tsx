@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Camera, X } from 'lucide-react';
+import { Camera, X, FlipHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import Pica from 'pica';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CameraModalProps {
   isOpen: boolean;
@@ -24,9 +25,26 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
   const resizeCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
+  const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
+  const isMobile = useIsMobile();
   
   // Initialize pica instance
   const pica = new Pica();
+
+  // Check if the device has multiple cameras
+  useEffect(() => {
+    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+      navigator.mediaDevices.enumerateDevices()
+        .then(devices => {
+          const videoDevices = devices.filter(device => device.kind === 'videoinput');
+          setHasMultipleCameras(videoDevices.length > 1);
+        })
+        .catch(err => {
+          console.error('Error checking cameras:', err);
+        });
+    }
+  }, []);
 
   useEffect(() => {
     // Start camera when modal opens
@@ -41,12 +59,17 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
     return () => {
       stopCamera();
     };
-  }, [isOpen]);
+  }, [isOpen, facingMode]);
 
   const startCamera = async () => {
     try {
+      if (stream) {
+        // If we already have a stream, stop it before starting a new one
+        stopCamera();
+      }
+      
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: { ideal: 480 } }
+        video: { facingMode: facingMode, width: { ideal: 480 } }
       });
 
       if (videoRef.current) {
@@ -70,6 +93,11 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
       setStream(null);
       setCameraActive(false);
     }
+  };
+
+  const flipCamera = () => {
+    // Toggle between front and back cameras
+    setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
   };
 
   const resizeImage = async (sourceCanvas: HTMLCanvasElement): Promise<string> => {
@@ -144,6 +172,17 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
             <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2 text-white text-xs text-center">
               Position your face in frame
             </div>
+          )}
+          {hasMultipleCameras && isMobile && (
+            <Button 
+              onClick={flipCamera}
+              variant="outline"
+              className="absolute top-2 right-2 p-2 bg-black/30 border-none text-white hover:bg-black/50"
+              size="icon"
+            >
+              <FlipHorizontal size={20} />
+              <span className="sr-only">Flip Camera</span>
+            </Button>
           )}
           <div className="scanning-line"></div>
         </div>
