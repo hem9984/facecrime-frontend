@@ -128,10 +128,11 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
             // First remove background
             const bgRemovedImageUrl = await processWithBackgroundRemoval(imageDataUrl);
             
-            // Then resize to required dimensions
-            const resizedImageDataUrl = await resizeImage(bgRemovedImageUrl);
+            // Display the background-removed image directly
+            setCapturedImage(bgRemovedImageUrl);
             
-            setCapturedImage(resizedImageDataUrl);
+            // Then resize for API submission
+            const resizedImageDataUrl = await resizeImage(bgRemovedImageUrl);
             onImageCapture(resizedImageDataUrl);
           } catch (error) {
             console.error('Error processing image:', error);
@@ -162,10 +163,11 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
       // First remove background
       const bgRemovedImageUrl = await processWithBackgroundRemoval(imageData);
       
-      // Then resize to required dimensions
-      const resizedImageDataUrl = await resizeImage(bgRemovedImageUrl);
+      // Display the background-removed image directly
+      setCapturedImage(bgRemovedImageUrl);
       
-      setCapturedImage(resizedImageDataUrl);
+      // Then resize for API submission
+      const resizedImageDataUrl = await resizeImage(bgRemovedImageUrl);
       onImageCapture(resizedImageDataUrl);
     } catch (error) {
       console.error('Error processing camera capture:', error);
