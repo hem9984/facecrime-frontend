@@ -2,10 +2,7 @@
 import React from 'react';
 
 interface Subject {
-  name: string;
   image: string;
-  location: string;
-  bio: string;
   offense: string;
   height: string;
   weight: string;
@@ -50,7 +47,7 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
         </div>
         <img 
           src={subject.image} 
-          alt={subject.name} 
+          alt="Subject" 
           className="w-full h-[250px] object-cover object-center border border-gray-300"
         />
       </div>
@@ -62,12 +59,7 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
         
         <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
           <div className="font-semibold text-fbi-gray">Name:</div>
-          <div className="font-mono">{subject.name}</div>
-        </div>
-        
-        <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
-          <div className="font-semibold text-fbi-gray">Location:</div>
-          <div className="font-mono">{subject.location}</div>
+          <div className="font-mono">REDACTED</div>
         </div>
         
         <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
@@ -96,11 +88,6 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
             <div className="font-semibold text-fbi-gray">Race:</div>
             <div className="font-mono">{subject.race}</div>
           </div>
-        </div>
-        
-        <div className="grid grid-cols-[120px_1fr] gap-2 pt-1">
-          <div className="font-semibold text-fbi-gray">Bio:</div>
-          <div className="font-mono text-sm">{subject.bio}</div>
         </div>
       </div>
     </div>

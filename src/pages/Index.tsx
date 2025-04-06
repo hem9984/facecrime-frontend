@@ -11,10 +11,7 @@ const Index = () => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [recognitionResult, setRecognitionResult] = useState<{
-    name: string;
     image: string;
-    location: string;
-    bio: string;
     offense: string;
     height: string;
     weight: string;
