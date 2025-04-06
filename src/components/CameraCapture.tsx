@@ -4,6 +4,7 @@ import { Camera, Upload, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import CameraModal from './CameraModal';
+import Pica from 'pica';
 
 interface CameraCaptureProps {
   onImageCapture: (image: string) => void;
@@ -14,7 +15,51 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [showCameraModal, setShowCameraModal] = useState(false);
   
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Initialize pica instance
+  const pica = new Pica();
+  
+  const resizeImage = async (imageDataUrl: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = async () => {
+        try {
+          // Create source canvas with image
+          const sourceCanvas = document.createElement('canvas');
+          sourceCanvas.width = img.width;
+          sourceCanvas.height = img.height;
+          const sourceCtx = sourceCanvas.getContext('2d');
+          if (sourceCtx) {
+            sourceCtx.drawImage(img, 0, 0);
+          }
+          
+          // Create destination canvas with target size
+          const destCanvas = document.createElement('canvas');
+          destCanvas.width = 224;
+          destCanvas.height = 224;
+          
+          // Resize image using pica
+          await pica.resize(sourceCanvas, destCanvas);
+          
+          // Get data URL from resized image
+          const resizedImageDataUrl = destCanvas.toDataURL('image/jpeg', 0.9);
+          resolve(resizedImageDataUrl);
+        } catch (error) {
+          console.error('Error resizing image:', error);
+          // If resize fails, return original image
+          resolve(imageDataUrl);
+        }
+      };
+      
+      img.onerror = () => {
+        console.error('Error loading image');
+        reject('Error loading image');
+      };
+      
+      img.src = imageDataUrl;
+    });
+  };
+  
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     
     if (file) {
@@ -24,11 +69,18 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
       }
       
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         if (e.target?.result) {
-          const imageDataUrl = e.target.result.toString();
-          setCapturedImage(imageDataUrl);
-          onImageCapture(imageDataUrl);
+          try {
+            const imageDataUrl = e.target.result.toString();
+            const resizedImageDataUrl = await resizeImage(imageDataUrl);
+            
+            setCapturedImage(resizedImageDataUrl);
+            onImageCapture(resizedImageDataUrl);
+          } catch (error) {
+            console.error('Error processing image:', error);
+            toast.error("Failed to process image.");
+          }
         }
       };
       reader.readAsDataURL(file);
@@ -46,9 +98,15 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
     }
   };
 
-  const handleCameraCapture = (imageData: string) => {
-    setCapturedImage(imageData);
-    onImageCapture(imageData);
+  const handleCameraCapture = async (imageData: string) => {
+    try {
+      const resizedImageData = await resizeImage(imageData);
+      setCapturedImage(resizedImageData);
+      onImageCapture(resizedImageData);
+    } catch (error) {
+      console.error('Error processing camera capture:', error);
+      toast.error("Failed to process image.");
+    }
   };
 
   const openCameraModal = () => {
