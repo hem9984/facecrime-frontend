@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import Pica from 'pica';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CameraModalProps {
   isOpen: boolean;
@@ -26,25 +25,9 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
-  const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
-  const isMobile = useIsMobile();
   
   // Initialize pica instance
   const pica = new Pica();
-
-  // Check if the device has multiple cameras
-  useEffect(() => {
-    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-      navigator.mediaDevices.enumerateDevices()
-        .then(devices => {
-          const videoDevices = devices.filter(device => device.kind === 'videoinput');
-          setHasMultipleCameras(videoDevices.length > 1);
-        })
-        .catch(err => {
-          console.error('Error checking cameras:', err);
-        });
-    }
-  }, []);
 
   useEffect(() => {
     // Start camera when modal opens
@@ -173,17 +156,18 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
               Position your face in frame
             </div>
           )}
-          {hasMultipleCameras && isMobile && (
-            <Button 
-              onClick={flipCamera}
-              variant="outline"
-              className="absolute top-2 right-2 p-2 bg-black/30 border-none text-white hover:bg-black/50"
-              size="icon"
-            >
-              <FlipHorizontal size={20} />
-              <span className="sr-only">Flip Camera</span>
-            </Button>
-          )}
+          
+          {/* Always visible flip camera button (fixed position) */}
+          <Button 
+            onClick={flipCamera}
+            variant="outline"
+            className="absolute top-2 right-2 p-2 bg-black/30 border-none text-white hover:bg-black/50"
+            size="icon"
+          >
+            <FlipHorizontal size={20} />
+            <span className="sr-only">Flip Camera</span>
+          </Button>
+          
           <div className="scanning-line"></div>
         </div>
         

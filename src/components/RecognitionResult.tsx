@@ -54,7 +54,7 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
           {matchPercentFormatted}% MATCH
         </div>
         <img 
-          src={subject.image.startsWith('data:image') ? subject.image : `data:image/jpeg;base64,${subject.image}`} 
+          src={subject.image.startsWith('data:image') ? subject.image : `data:image/jpeg;base64,${subject.image}`}
           alt="Subject" 
           className="w-full h-[250px] object-cover object-center border border-gray-300"
         />
