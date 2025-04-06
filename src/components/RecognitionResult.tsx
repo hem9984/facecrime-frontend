@@ -30,8 +30,13 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
 
   if (!subject) {
     return (
-      <div className="fbi-panel h-full min-h-[250px] flex items-center justify-center">
-        <p className="text-fbi-gray italic">No recognition data available</p>
+      <div className="fbi-panel h-full min-h-[250px]">
+        <h2 className="text-lg font-semibold mb-3 text-fbi-navy flex items-center">
+          <span className="w-2 h-6 bg-fbi-red mr-2"></span> 
+          Recognition Results
+        </h2>
+        
+        <div className="w-full h-[250px] bg-white border border-gray-300"></div>
       </div>
     );
   }
