@@ -15,6 +15,12 @@ const Index = () => {
     image: string;
     location: string;
     bio: string;
+    offense: string;
+    height: string;
+    weight: string;
+    hairColor: string;
+    eyeColor: string;
+    race: string;
   } | null>(null);
 
   const handleImageCapture = (image: string) => {
