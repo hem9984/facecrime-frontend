@@ -10,7 +10,7 @@ interface Subject {
   eyeColor: string;
   race: string;
   sexOffender: boolean;
-  matchPercent: number; // Added match percentage field
+  matchPercent: number;
 }
 
 interface RecognitionResultProps {
@@ -50,12 +50,11 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
         <div className="absolute top-4 left-4 py-1 px-3 bg-fbi-red/90 text-white text-xs tracking-wider">
           MATCH FOUND
         </div>
-        {/* Add match percentage badge */}
         <div className="absolute top-4 right-4 py-1 px-3 bg-fbi-navy/90 text-white text-xs tracking-wider">
           {matchPercentFormatted}% MATCH
         </div>
         <img 
-          src={`data:image/jpeg;base64,${subject.image}`} 
+          src={subject.image.startsWith('data:image') ? subject.image : `data:image/jpeg;base64,${subject.image}`} 
           alt="Subject" 
           className="w-full h-[250px] object-cover object-center border border-gray-300"
         />
@@ -76,7 +75,6 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
           <div className="font-mono text-red-600">{subject.offense}</div>
         </div>
 
-        {/* Added Sex Offender Status */}
         <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
           <div className="font-semibold text-fbi-gray">Sex Offender:</div>
           <div className="font-mono">
