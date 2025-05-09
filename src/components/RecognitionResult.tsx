@@ -39,12 +39,12 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
   
   // Determine match status based on match percentage
   const getMatchStatus = () => {
-    if (matchPercentFormatted >= 90) {
+    if (matchPercentFormatted >= 75) {
       return { text: 'MATCH', color: 'bg-green-600', textColor: 'text-white' };
-    } else if (matchPercentFormatted >= 70) {
-      return { text: 'MAYBE', color: 'bg-yellow-500', textColor: 'text-black' };
+    } else if (matchPercentFormatted >= 35) {
+      return { text: 'REVIEW DETAILS TO CONFIRM MATCH', color: 'bg-yellow-500', textColor: 'text-black' };
     } else {
-      return { text: 'NO MATCHES FOUND', color: 'bg-red-600', textColor: 'text-white' };
+      return { text: 'NOT A MATCH', color: 'bg-red-600', textColor: 'text-white' };
     }
   };
   

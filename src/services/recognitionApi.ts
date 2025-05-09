@@ -148,13 +148,20 @@ const createEmptyResult = (message: string): RecognitionResult => {
 const processApiResponse = (result: any): RecognitionResult => {
   // Format the full name with available name parts
   const formatName = (prefix?: string, first?: string, middle?: string, last?: string, suffix?: string) => {
+    // Log the name parts to debug
+    console.log("Name parts:", { prefix, first, middle, last, suffix });
+    
     const parts = [];
     if (prefix) parts.push(prefix);
     if (first) parts.push(first);
     if (middle) parts.push(middle);
     if (last) parts.push(last);
     if (suffix) parts.push(suffix);
-    return parts.join(' ') || 'Unknown';
+    
+    const fullName = parts.join(' ');
+    console.log("Formatted name:", fullName);
+    
+    return fullName || 'Unknown';
   };
   
   // Format the location data into a single field
