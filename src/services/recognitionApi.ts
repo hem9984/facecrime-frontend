@@ -126,7 +126,7 @@ export const recognizeFace = async (imageData: string): Promise<RecognitionResul
 // Helper function to create an empty result
 const createEmptyResult = (message: string): RecognitionResult => {
   return {
-    fullName: message,
+    fullName: "NO FACE DETECTED - TRY AGAIN LATER",
     gender: 'Unknown',
     dob: 'Unknown',
     location: 'Unknown',

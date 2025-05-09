@@ -80,8 +80,14 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
       </div>
 
       <div className="space-y-3 relative">
-        <div className="absolute -rotate-12 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20 pointer-events-none">
-          <div className="classified-stamp">Classified</div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none w-full h-full z-0">
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="border border-red-200 bg-transparent p-6 -rotate-12 opacity-40">
+              <div className="text-center text-red-500 text-sm mt-2 leading-tight">
+                Use of information from this website to harass an individual is a criminal offense
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
@@ -124,7 +130,7 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
                 </svg>
               </span>
             ) : (
-              <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded">In Custody</span>
+              <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded">Not on the Run</span>
             )}
           </div>
         </div>

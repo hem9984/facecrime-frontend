@@ -16,7 +16,7 @@ const Header = () => {
         <div className="flex items-center">
           <div className="hidden md:block text-right">
             <p className="text-sm">SECURITY CLEARANCE</p>
-            <p className="text-xs text-fbi-gold">TOP SECRET // RECON</p>
+            <p className="text-xs text-fbi-gold">PRIVATE SECTOR</p>
           </div>
           <div className="w-3 h-3 bg-fbi-red rounded-full ml-3 animate-pulse-red"></div>
         </div>

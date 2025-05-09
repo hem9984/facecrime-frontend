@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import CameraCapture from '@/components/CameraCapture';
 import RecognitionResult from '@/components/RecognitionResult';
@@ -44,7 +45,7 @@ const Index = () => {
         <div className="max-w-5xl mx-auto">
           <div className="bg-fbi-navy p-3 mb-6">
             <h2 className="text-white text-sm md:text-base tracking-wide text-center font-mono">
-              [REDACTED] FACIAL RECOGNITION SYSTEM | SECURITY LEVEL: ALPHA
+              FACIAL RECOGNITION SYSTEM | SECURITY LEVEL: Private Sector
             </h2>
           </div>
           
@@ -72,14 +73,25 @@ const Index = () => {
           
           <div className="mt-8 text-center">
             <p className="text-xs text-gray-500">
-              FACECRIME RECON PORTAL | CONFIDENTIAL
+              FACECRIME RECON PORTAL | PUBLIC DOMAIN
             </p>
             <p className="text-xs text-gray-400 mt-1">
-              UNAUTHORIZED ACCESS WIll BE PUNISHED
+              USE OF INFORMATION FROM THIS WEBSITE TO HARASS AN INDIVIDUAL IS A CRIMINAL OFFENSE
             </p>
           </div>
         </div>
       </main>
+      
+      <footer className="py-4 mt-auto border-t border-gray-200 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center">
+            <p className="text-xs text-gray-500">© 2025 FaceCrime. All rights reserved.</p>
+            <Link to="/terms" className="text-xs text-gray-500 hover:text-fbi-navy hover:underline transition-colors">
+              Terms & Conditions
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
