@@ -4,40 +4,24 @@ import Header from '@/components/Header';
 import CameraCapture from '@/components/CameraCapture';
 import RecognitionResult from '@/components/RecognitionResult';
 import { Button } from '@/components/ui/button';
-import { recognizeFace } from '@/services/recognitionApi';
+import { recognizeFace, RecognitionResult as RecognitionData } from '@/services/recognitionApi';
 import { toast } from 'sonner';
 
 const Index = () => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [recognitionResult, setRecognitionResult] = useState<{
-    image: string;
-    offense: string;
-    height: string;
-    weight: string;
-    hairColor: string;
-    eyeColor: string;
-    race: string;
-    sexOffender: boolean;
-    matchPercent: number; // Added match percentage field
-  } | null>(null);
+  const [recognitionResult, setRecognitionResult] = useState<RecognitionData | null>(null);
 
-  const handleImageCapture = (image: string) => {
+  const handleImageCapture = async (image: string) => {
     setCapturedImage(image);
     setRecognitionResult(null);
-  };
-
-  const handleSubmit = async () => {
-    if (!capturedImage) {
-      toast.error("Please capture or upload an image first.");
-      return;
-    }
-
+    
+    // Automatically submit for recognition
     try {
       setIsProcessing(true);
       
       // Extract base64 string from data URL if needed
-      const base64Image = capturedImage.split(',')[1] || capturedImage;
+      const base64Image = image.split(',')[1] || image;
       
       const result = await recognizeFace(base64Image);
       setRecognitionResult(result);
@@ -49,6 +33,8 @@ const Index = () => {
       setIsProcessing(false);
     }
   };
+
+  // Recognition is now automatically triggered when an image is captured
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -66,15 +52,14 @@ const Index = () => {
             <div className="space-y-6">
               <CameraCapture onImageCapture={handleImageCapture} />
               
-              <div className="flex justify-center">
-                <Button 
-                  className="official-btn text-lg py-4 px-8 w-full sm:w-auto"
-                  onClick={handleSubmit}
-                  disabled={!capturedImage || isProcessing}
-                >
-                  {isProcessing ? "Processing..." : "Submit for Recognition"}
-                </Button>
-              </div>
+              {isProcessing && (
+                <div className="flex justify-center mt-4">
+                  <div className="flex items-center gap-2 bg-fbi-navy/10 text-fbi-navy px-4 py-2 rounded">
+                    <div className="w-5 h-5 border-2 border-fbi-navy border-t-transparent rounded-full animate-spin"></div>
+                    <span>Processing recognition request...</span>
+                  </div>
+                </div>
+              )}
             </div>
             
             <div>

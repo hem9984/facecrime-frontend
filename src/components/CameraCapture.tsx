@@ -40,8 +40,8 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
           
           // Create destination canvas with target size
           const destCanvas = document.createElement('canvas');
-          destCanvas.width = 224;
-          destCanvas.height = 224;
+          destCanvas.width = 640;
+          destCanvas.height = 640;
           
           // Resize image using pica with Lanczos3 filter
           await pica.resize(sourceCanvas, destCanvas, {
@@ -49,7 +49,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
           });
           
           // Get data URL from resized image
-          const resizedImageDataUrl = destCanvas.toDataURL('image/jpeg', 0.9);
+          const resizedImageDataUrl = destCanvas.toDataURL('image/jpeg', 1.0);
           resolve(resizedImageDataUrl);
         } catch (error) {
           console.error('Error resizing image:', error);

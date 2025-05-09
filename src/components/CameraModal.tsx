@@ -58,7 +58,7 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
       }
       
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facingMode, width: { ideal: 480 } }
+        video: { facingMode: facingMode, width: { ideal: 640 } }
       });
 
       if (videoRef.current) {
@@ -86,6 +86,7 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
 
   const flipCamera = () => {
     // Toggle between front and back cameras
+    // we should default to rear camera
     setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
   };
 
@@ -93,24 +94,24 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
     try {
       if (!resizeCanvasRef.current) {
         const canvas = document.createElement('canvas');
-        canvas.width = 224;
-        canvas.height = 224;
+        canvas.width = 640;
+        canvas.height = 640;
         resizeCanvasRef.current = canvas;
       }
       
       const destCanvas = resizeCanvasRef.current;
-      destCanvas.width = 224;
-      destCanvas.height = 224;
+      destCanvas.width = 640;
+      destCanvas.height = 640;
       
       // Use LANCZOS by setting the filter to lanczos3 (Lanczos with a=3)
       await pica.resize(sourceCanvas, destCanvas, {
         filter: 'lanczos3'
       });
       
-      return destCanvas.toDataURL('image/jpeg', 0.9);
+      return destCanvas.toDataURL('image/jpeg', 1.0);
     } catch (error) {
       console.error('Image resize error:', error);
-      return sourceCanvas.toDataURL('image/jpeg', 0.9);
+      return sourceCanvas.toDataURL('image/jpeg', 1.0);
     }
   };
 
@@ -121,7 +122,7 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
       
       // Set canvas dimensions to match video
       canvas.width = video.videoWidth || 640;
-      canvas.height = video.videoHeight || 480;
+      canvas.height = video.videoHeight || 640;
       
       // Draw video frame to canvas
       const context = canvas.getContext('2d');
@@ -129,7 +130,7 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
         try {
           context.drawImage(video, 0, 0, canvas.width, canvas.height);
           
-          // Resize image to 224x224 using Lanczos
+          // Resize image to 640x640 using Lanczos
           const resizedImageDataUrl = await resizeImage(canvas);
           
           // Send captured and resized image to parent

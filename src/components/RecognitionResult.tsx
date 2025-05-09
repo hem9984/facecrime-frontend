@@ -1,21 +1,11 @@
 
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
-
-interface Subject {
-  image: string;
-  offense: string;
-  height: string;
-  weight: string;
-  hairColor: string;
-  eyeColor: string;
-  race: string;
-  sexOffender: boolean;
-  matchPercent: number;
-}
+import { RecognitionResult as RecognitionData } from '@/services/recognitionApi';
+import { ExternalLink } from 'lucide-react';
 
 interface RecognitionResultProps {
-  subject: Subject | null;
+  subject: RecognitionData | null;
   isLoading: boolean;
 }
 
@@ -47,8 +37,21 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
   // Round the match percentage to whole number
   const matchPercentFormatted = Math.round(subject.matchPercent * 100);
   
+  // Determine match status based on match percentage
+  const getMatchStatus = () => {
+    if (matchPercentFormatted >= 90) {
+      return { text: 'MATCH', color: 'bg-green-600', textColor: 'text-white' };
+    } else if (matchPercentFormatted >= 70) {
+      return { text: 'MAYBE', color: 'bg-yellow-500', textColor: 'text-black' };
+    } else {
+      return { text: 'NO MATCHES FOUND', color: 'bg-red-600', textColor: 'text-white' };
+    }
+  };
+  
+  const matchStatus = getMatchStatus();
+  
   // Check if we have a valid image from the API
-  const hasValidImage = subject.image && subject.image.length > 0;
+  const hasValidImage = subject.imageBase64 && subject.imageBase64.length > 0;
 
   return (
     <div className="fbi-panel relative">
@@ -57,15 +60,17 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
         Recognition Results
       </h2>
       
+      {/* Match status banner */}
+      <div className={`w-full ${matchStatus.color} ${matchStatus.textColor} text-center py-2 font-bold mb-2`}>
+        {matchStatus.text} - {matchPercentFormatted}% MATCH
+      </div>
+      
       <div className="relative mb-4">
-        <div className="absolute top-4 right-4 py-1 px-3 bg-fbi-navy/90 text-white text-xs tracking-wider">
-          {matchPercentFormatted}% MATCH
-        </div>
         {hasValidImage ? (
           <img 
-            src={subject.image.startsWith('data:image') ? subject.image : `data:image/jpeg;base64,${subject.image}`}
+            src={subject.imageBase64.startsWith('data:image') ? subject.imageBase64 : `data:image/jpeg;base64,${subject.imageBase64}`}
             alt="Subject" 
-            className="w-full h-[250px] object-cover object-center border border-gray-300"
+            className="w-full h-[250px] object-contain object-center border border-gray-300"
           />
         ) : (
           <div className="w-full h-[250px] bg-fbi-lightgray border border-gray-300 flex items-center justify-center">
@@ -81,70 +86,63 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
         
         <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
           <div className="font-semibold text-fbi-gray">Name:</div>
-          <div className="font-mono">REDACTED</div>
+          <div className="font-mono">{subject.fullName || 'REDACTED'}</div>
         </div>
         
         <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
-          <div className="font-semibold text-fbi-gray">Offense:</div>
-          <div className="font-mono text-red-600">{subject.offense}</div>
+          <div className="font-semibold text-fbi-gray">DOB:</div>
+          <div className="font-mono">{subject.dob}</div>
+        </div>
+        
+        <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
+          <div className="font-semibold text-fbi-gray">Gender:</div>
+          <div className="font-mono">{subject.gender}</div>
         </div>
 
         <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
-          <div className="font-semibold text-fbi-gray">Sex Offender:</div>
+          <div className="font-semibold text-fbi-gray">Location:</div>
+          <div className="font-mono">{subject.location}</div>
+        </div>
+        
+        <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
+          <div className="font-semibold text-fbi-gray">Address:</div>
           <div className="font-mono">
-            {subject.sexOffender ? 
-              <span className="bg-red-100 text-red-700 px-2 py-1 rounded font-bold">REGISTERED</span> : 
-              <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded">Not Registered</span>
-            }
+            {subject.streetAddress !== 'Unknown' ? subject.streetAddress : 'No address available'}<br/>
+            {subject.city !== 'Unknown' && `${subject.city}, `}{subject.state !== 'Unknown' && subject.state} {subject.zipCode !== 'Unknown' && subject.zipCode}<br/>
+            {subject.county !== 'Unknown' && `${subject.county} County`}
           </div>
         </div>
 
-        {isMobile ? (
-          // Mobile layout - stack all physical details vertically
-          <div className="border-b border-gray-200 py-2 space-y-2">
-            <div className="grid grid-cols-[110px_1fr] gap-1">
-              <div className="font-semibold text-fbi-gray">Height:</div>
-              <div className="font-mono">{subject.height}</div>
-            </div>
-            <div className="grid grid-cols-[110px_1fr] gap-1">
-              <div className="font-semibold text-fbi-gray">Weight:</div>
-              <div className="font-mono">{subject.weight}</div>
-            </div>
-            <div className="grid grid-cols-[110px_1fr] gap-1">
-              <div className="font-semibold text-fbi-gray">Hair:</div>
-              <div className="font-mono">{subject.hairColor}</div>
-            </div>
-            <div className="grid grid-cols-[110px_1fr] gap-1">
-              <div className="font-semibold text-fbi-gray">Eyes:</div>
-              <div className="font-mono">{subject.eyeColor}</div>
-            </div>
-            <div className="grid grid-cols-[110px_1fr] gap-1">
-              <div className="font-semibold text-fbi-gray">Race:</div>
-              <div className="font-mono">{subject.race}</div>
-            </div>
+        <div className="grid grid-cols-[120px_1fr] gap-2 border-b border-gray-200 pb-2">
+          <div className="font-semibold text-fbi-gray">Status:</div>
+          <div className="font-mono">
+            {subject.absconder ? (
+              <span className="flex items-center gap-2">
+                <span className="bg-red-100 text-red-700 px-2 py-1 rounded font-bold">ON THE RUN</span>
+                <svg className="text-red-600 h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </span>
+            ) : (
+              <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded">In Custody</span>
+            )}
           </div>
-        ) : (
-          // Desktop layout - 2 columns
-          <div className="grid grid-cols-2 gap-x-4 gap-y-2 border-b border-gray-200 py-2">
-            <div className="grid grid-cols-[100px_1fr] gap-1">
-              <div className="font-semibold text-fbi-gray">Height:</div>
-              <div className="font-mono">{subject.height}</div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] gap-1">
-              <div className="font-semibold text-fbi-gray">Weight:</div>
-              <div className="font-mono">{subject.weight}</div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] gap-1">
-              <div className="font-semibold text-fbi-gray">Hair:</div>
-              <div className="font-mono">{subject.hairColor}</div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] gap-1">
-              <div className="font-semibold text-fbi-gray">Eyes:</div>
-              <div className="font-mono">{subject.eyeColor}</div>
-            </div>
-            <div className="grid grid-cols-[100px_1fr] gap-1">
-              <div className="font-semibold text-fbi-gray">Race:</div>
-              <div className="font-mono">{subject.race}</div>
+        </div>
+        
+        {/* Links section */}
+        {subject.offenderUri && (
+          <div className="border-t border-gray-200 pt-3 mt-3">
+            <h3 className="text-sm font-semibold mb-2 text-fbi-navy">Criminal Record</h3>
+            <div className="space-y-2">
+              <a 
+                href={subject.offenderUri} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block w-full bg-fbi-navy text-white py-2 px-4 rounded flex items-center justify-center gap-2 hover:bg-fbi-navy/90 transition-colors"
+              >
+                <ExternalLink size={16} />
+                <span>View Official Criminal Record</span>
+              </a>
             </div>
           </div>
         )}
