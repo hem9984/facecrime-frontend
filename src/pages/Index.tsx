@@ -44,6 +44,7 @@ const Index = () => {
       <main className="flex-grow container mx-auto py-6 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="bg-fbi-navy p-3 mb-6">
+            
             <h2 className="text-white text-sm md:text-base tracking-wide text-center font-mono">
               FACIAL RECOGNITION SYSTEM | SECURITY LEVEL: Private Sector
             </h2>
@@ -51,33 +52,7 @@ const Index = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-6">
-            <div className="fbi-panel relative">
-              <h2 className="font-semibold text-lg text-blue-900 mb-2">
-                Check if someone is on a sex offender registry—just using their photo.
-              </h2>
-              <p className="text-sm text-gray-700">
-                No names, no guesswork. Because 64% of offenders lie about who{' '}
-                <a href="#" className="text-blue-700 underline">they are</a>.
-              </p>
-            </div>
-              <CameraCapture onImageCapture={handleImageCapture} />
-              
-              {isProcessing && (
-                <div className="flex justify-center mt-4">
-                  <div className="flex items-center gap-2 bg-fbi-navy/10 text-fbi-navy px-4 py-2 rounded">
-                    <div className="w-5 h-5 border-2 border-fbi-navy border-t-transparent rounded-full animate-spin"></div>
-                    <span>Processing recognition request...</span>
-                  </div>
-                </div>
-              )}
-              <RecognitionResult 
-                subject={recognitionResult}
-                isLoading={isProcessing} 
-              />
-            </div>
-            
-            <div>
-              <div className="fbi-panel relative mb-[24px]">
+            <div className="fbi-panel relative mb-[24px]">
                 <h2 className="font-bold text-lg text-black-700 mb-2">
                   Description of Service
                 </h2>
@@ -97,6 +72,33 @@ const Index = () => {
                   Contact Information
                 </h2>
               </div>
+              <div className="fbi-panel relative">
+              <h2 className="font-semibold text-lg text-blue-900 mb-2">
+                Check if someone is on a sex offender registry—just using their photo.
+              </h2>
+              <p className="text-sm text-gray-700">
+                No names, no guesswork. Because 64% of offenders lie about who 
+                they are.
+              </p>
+            </div>
+            <CameraCapture onImageCapture={handleImageCapture} />
+            
+            </div>
+            
+            <div>
+              {isProcessing && (
+                <div className="flex justify-center mt-4">
+                  <div className="flex items-center gap-2 bg-fbi-navy/10 text-fbi-navy px-4 py-2 rounded">
+                    <div className="w-5 h-5 border-2 border-fbi-navy border-t-transparent rounded-full animate-spin"></div>
+                    <span>Processing recognition request...</span>
+                  </div>
+                </div>
+              )}
+              <RecognitionResult 
+                subject={recognitionResult}
+                isLoading={isProcessing} 
+              />
+              
             </div>
           </div>
           
