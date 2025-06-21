@@ -51,6 +51,15 @@ const Index = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-6">
+            <div className="fbi-panel relative">
+              <h2 className="font-semibold text-lg text-blue-900 mb-2">
+                Check if someone is on a sex offender registry—just using their photo.
+              </h2>
+              <p className="text-sm text-gray-700">
+                No names, no guesswork. Because 64% of offenders lie about who{' '}
+                <a href="#" className="text-blue-700 underline">they are</a>.
+              </p>
+            </div>
               <CameraCapture onImageCapture={handleImageCapture} />
               
               {isProcessing && (
@@ -61,13 +70,33 @@ const Index = () => {
                   </div>
                 </div>
               )}
-            </div>
-            
-            <div>
               <RecognitionResult 
                 subject={recognitionResult}
                 isLoading={isProcessing} 
               />
+            </div>
+            
+            <div>
+              <div className="fbi-panel relative mb-[24px]">
+                <h2 className="font-bold text-lg text-black-700 mb-2">
+                  Description of Service
+                </h2>
+              </div>
+              <div className="fbi-panel relative mb-[24px]">
+                <h2 className="font-bold text-lg text-black-700 mb-2">
+                  Accuracy of Information
+                </h2>
+              </div>
+              <div className="fbi-panel relative mb-[24px]">
+                <h2 className="font-bold text-lg text-black-700 mb-2">
+                  Data Privacy
+                </h2>
+              </div>
+              <div className="fbi-panel relative mb-[32px]">
+                <h2 className="font-bold text-lg text-black-700 mb-2">
+                  Contact Information
+                </h2>
+              </div>
             </div>
           </div>
           
