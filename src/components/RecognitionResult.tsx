@@ -23,7 +23,7 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
 
   if (!subject) {
     return (
-      <div className="fbi-panel h-full min-h-[250px]">
+      <div className="fbi-panel h-[37%] min-h-[250px]">
         <h2 className="text-lg font-semibold mb-3 text-fbi-navy flex items-center">
           <span className="w-2 h-6 bg-fbi-red mr-2"></span> 
           Recognition Results
