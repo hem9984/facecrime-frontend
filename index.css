@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Official Button */
+.official-btn {
+  background-color: #1a237e; /* fbi-navy */
+  color: #fff;
+  transition: background-color 0.2s;
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+  border-radius: 4px;
+  outline: none;
+  border: none;
+}
+.official-btn:hover {
+  background-color: #0d133d; /* fbi-darkblue */
+}
+.official-btn:focus {
+  outline: 2px solid #ffd700; /* fbi-gold */
+}
+
+/* FBI Input */
+.fbi-input {
+  background-color: #f5f6fa; /* fbi-lightgray */
+  border: 1px solid #d1d5db; /* gray-300 */
+  color: #1a202c; /* gray-900 */
+  border-radius: 4px;
+}
+.fbi-input:focus {
+  border-color: #1a237e; /* fbi-navy */
+  box-shadow: 0 0 0 1px #1a237e;
+}
+
+/* FBI Panel */
+.fbi-panel {
+  background: #fff;
+  border: 1px solid #e5e7eb; /* gray-200 */
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 1rem;
+}
+
+/* Result Grid */
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .result-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Classified Stamp */
+.classified-stamp {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #dc2626; /* red-600 */
+  border: 2px solid #dc2626;
+  transform: rotate(-12deg);
+  position: absolute;
+  font-weight: bold;
+  font-size: 1.25rem;
+  padding: 0.25rem 1rem;
+}
+
+/* Scanning Line */
+.scanning-line {
+  position: absolute;
+  height: 0.25rem;
+  background: rgba(34,197,94,0.7); /* green-500/70 */
+  width: 100%;
+  left: 0;
+  top: 0;
+  animation: scanning 2s linear infinite;
+}
+
+@keyframes scanning {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+/* Animate Pulse Red */
+.animate-pulse-red {
+  animation: pulse-red 2s infinite;
+}
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Flex utilities */
+.flex {
+  display: flex;
+}
+.inline-flex {
+  display: inline-flex;
+}
+.flex-row {
+  flex-direction: row;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.items-start {
+  align-items: flex-start;
+}
+.items-end {
+  align-items: flex-end;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-start {
+  justify-content: flex-start;
+}
+.justify-end {
+  justify-content: flex-end;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
+.flex-1 {
+  flex: 1 1 0%;
+}
+.flex-auto {
+  flex: 1 1 auto;
+}
+.flex-none {
+  flex: none;
+} 
