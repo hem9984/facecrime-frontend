@@ -1,14 +1,6 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Camera, X, FlipHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogClose,
-} from '@/components/ui/dialog';
+import { Button } from './ui/button';
 import { toast } from 'sonner';
 import Pica from 'pica';
 
@@ -133,12 +125,11 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
           // Resize image to 640x640 using Lanczos
           const resizedImageDataUrl = await resizeImage(canvas);
           
-          // Send captured and resized image to parent
-          onCapture(resizedImageDataUrl);
-          
-          // Close modal and stop camera
+          // Close modal first
           stopCamera();
           onClose();
+          // Then send image to parent
+          onCapture(resizedImageDataUrl);
         } catch (error) {
           console.error("Error capturing image:", error);
           toast.error("Failed to capture image. Please try again.");
@@ -148,59 +139,171 @@ const CameraModal: React.FC<CameraModalProps> = ({ isOpen, onClose, onCapture })
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => onClose()}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Take Photo</DialogTitle>
-        </DialogHeader>
-        
-        <div className="relative bg-black rounded-md overflow-hidden">
-          <video 
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            className="w-full h-[300px] object-cover"
-          />
-          {cameraActive && (
-            <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2 text-white text-xs text-center">
-              Position the face in frame
+    <>
+      {isOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(0,0,0,0.55)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: 'white',
+              borderRadius: 16,
+              padding: 24,
+              minWidth: 350,
+              minHeight: 420,
+              width: '90vw',
+              maxWidth: 420,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.18), 0 1.5px 4px rgba(0,0,0,0.12)',
+              position: 'relative',
+              animation: 'modalFadeIn 0.25s cubic-bezier(.4,0,.2,1)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            {/* Close (X) button in top-right */}
+            <button
+              onClick={onClose}
+              style={{
+                position: 'absolute',
+                top: 12,
+                right: 12,
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 4,
+                zIndex: 2,
+              }}
+              aria-label="Close"
+            >
+              <X size={22} color="#888" />
+            </button>
+
+            <h2
+              style={{
+                fontWeight: 700,
+                fontSize: 22,
+                marginBottom: 18,
+                textAlign: 'center',
+                letterSpacing: '-0.5px',
+                width: '100%',
+              }}
+            >
+              Take Photo
+            </h2>
+
+            <div
+              style={{
+                position: 'relative',
+                background: 'black',
+                borderRadius: 12,
+                overflow: 'hidden',
+                width: '100%',
+                maxWidth: 350,
+                height: 300,
+                marginBottom: 16,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: 12,
+                  background: 'black',
+                }}
+              />
+              {cameraActive && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    background: 'rgba(0,0,0,0.5)',
+                    padding: 8,
+                    color: 'white',
+                    fontSize: 12,
+                    textAlign: 'center',
+                  }}
+                >
+                  Position the face in frame
+                </div>
+              )}
+
+              {/* Flip camera button */}
+              <Button
+                onClick={flipCamera}
+                variant="outline"
+                className="absolute top-2 right-2 p-2 bg-black/30 border-none text-white hover:bg-black/50"
+                size="icon"
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  zIndex: 1,
+                  background: 'rgba(0,0,0,0.3)',
+                  border: 'none',
+                  color: 'white',
+                }}
+              >
+                <FlipHorizontal size={20} />
+                <span className="sr-only">Flip Camera</span>
+              </Button>
             </div>
-          )}
-          
-          {/* Always visible flip camera button (fixed position) */}
-          <Button 
-            onClick={flipCamera}
-            variant="outline"
-            className="absolute top-2 right-2 p-2 bg-black/30 border-none text-white hover:bg-black/50"
-            size="icon"
-          >
-            <FlipHorizontal size={20} />
-            <span className="sr-only">Flip Camera</span>
-          </Button>
-          
-          <div className="scanning-line"></div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: 8 }}>
+              <Button
+                variant="outline"
+                className="text-red-500 border-red-500 flex-1"
+                onClick={onClose}
+                style={{ minWidth: 0, flex: 1 }}
+              >
+                <X size={18} className="mr-1" /> Cancel
+              </Button>
+
+              <Button
+                onClick={captureImage}
+                className="bg-fbi-navy text-white hover:bg-fbi-navy/80 flex-1"
+                disabled={!cameraActive}
+                style={{ minWidth: 0, flex: 1 }}
+              >
+                <Camera size={18} className="mr-1" /> Capture
+              </Button>
+            </div>
+
+            <canvas ref={canvasRef} className="hidden" />
+          </div>
+          {/* Modal fade-in animation */}
+          <style>
+            {`
+              @keyframes modalFadeIn {
+                from { opacity: 0; transform: translateY(40px) scale(0.98);}
+                to { opacity: 1; transform: translateY(0) scale(1);}
+              }
+            `}
+          </style>
         </div>
-        
-        <div className="flex justify-between mt-2">
-          <DialogClose asChild>
-            <Button variant="outline" className="text-red-500 border-red-500">
-              <X size={18} className="mr-1" /> Cancel
-            </Button>
-          </DialogClose>
-          
-          <Button 
-            onClick={captureImage}
-            className="bg-fbi-navy text-white hover:bg-fbi-navy/80"
-            disabled={!cameraActive}
-          >
-            <Camera size={18} className="mr-1" /> Capture
-          </Button>
-        </div>
-        
-        <canvas ref={canvasRef} className="hidden" />
-      </DialogContent>
-    </Dialog>
+      )}
+    </>
   );
 };
 
