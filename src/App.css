@@ -192,6 +192,19 @@ button:active {
   background: #0056b3;
 }
 
+/* Default logo size */
+.logo-img {
+  width: 200px;
+  height: auto;
+}
+
+/* Make logo bigger on mobile */
+@media (max-width: 800px) {
+  .logo-img {
+    width: 400px;
+  }
+}
+
 /* Desktop-specific improvements */
 @media (min-width: 1024px) {
   .app-container {
