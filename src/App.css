@@ -74,6 +74,7 @@ body, html {
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  border: 4px dashed #1c0ee9; /* <-- Now a blue dashed border */
 }
 
 .upload-box:hover {
