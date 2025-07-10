@@ -124,7 +124,7 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
       </nav>
 
       <main className="main-content">
-        <img src="/images/logo.png" alt="Logo" />
+        <img src="/images/logo.png" alt="Logo" className="logo-img" />
         <div
             className="upload-box"
             style={{ backgroundImage: 'url("/images/photo.png")' }}
