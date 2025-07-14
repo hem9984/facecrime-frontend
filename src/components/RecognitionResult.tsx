@@ -4,15 +4,19 @@ import { RecognitionResult as RecognitionData } from '@/services/recognitionApi'
 import { ExternalLink, ArrowLeft } from 'lucide-react';
 import { User, Calendar, Venus, MapPin, Home, Shield } from 'lucide-react';
 import '../index.css';
+import { useState } from 'react';
 
 interface RecognitionResultProps {
   subject: RecognitionData | null;
   isLoading: boolean;
   onBack?: () => void;
+  originalPhotoUrl: string | null;
 }
 
-const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoading, onBack }) => {
+const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoading, onBack, originalPhotoUrl }) => {
   const isMobile = useIsMobile();
+
+  console.log("Hello", originalPhotoUrl);
 
   if (isLoading) {
     return (
@@ -31,6 +35,12 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
           Recognition Results
         </h2>
         <div className="placeholder-image"></div>
+        {/* Show the original photo if available */}
+        {originalPhotoUrl && (
+          <div className="original-photo-container">
+            <img src={`data:image/png;base64,${originalPhotoUrl}`} alt="Captured" />
+          </div>
+        )}
       </div>
     );
   }
@@ -75,11 +85,22 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
 
       <div className="image-container">
         {hasValidImage ? (
-          <img 
-            src={subject.imageBase64.startsWith('data:image') ? subject.imageBase64 : `data:image/jpeg;base64,${subject.imageBase64}`}
-            alt="Subject" 
-            className="subject-image"
-          />
+          <>
+            <img 
+              src={subject.imageBase64.startsWith('data:image') ? subject.imageBase64 : `data:image/jpeg;base64,${subject.imageBase64}`}
+              alt="Subject" 
+              className="subject-image"
+            />
+            <img
+              src={
+                (originalPhotoUrl ?? "").startsWith("data:image/")
+                  ? originalPhotoUrl ?? ""
+                  : `data:image/png;base64,${originalPhotoUrl ?? ""}`
+              }
+              alt="Captured"
+              className="subject-image"
+            />
+          </>
         ) : (
           <div className="no-image">
             <p className="no-image-text">No subject image available</p>
@@ -113,39 +134,15 @@ const RecognitionResult: React.FC<RecognitionResultProps> = ({ subject, isLoadin
             <div className="detail-item">
               <Home className="icon" /><strong>Address:</strong>
               <span>
-                {subject.streetAddress !== 'Unknown' ? subject.streetAddress : 'No address available'}<br />
-                {subject.city !== 'Unknown' && `${subject.city}, `}{subject.state !== 'Unknown' && subject.state} {subject.zipCode !== 'Unknown' && subject.zipCode}<br />
-                {subject.county !== 'Unknown' && `${subject.county} County`}
-              </span>
-            </div>
-            <div className="detail-item">
-              <Shield className="icon" /><strong>Status:</strong>
-              <span>
-                {subject.absconder ? (
-                  <span className="status-alert">ON THE RUN</span>
-                ) : (
-                  <span className="status-ok">Not on the Run</span>
-                )}
+                {subject.streetAddress !== 'Unknown' ? subject.streetAddress : 'No address available'}
+                <br />
+                {subject.city !== 'Unknown' ? subject.city : ''}
+                {subject.state !== 'Unknown' && subject.state ? `, ${subject.state}` : ''}
+                {subject.zipCode !== 'Unknown' && subject.zipCode ? ` ${subject.zipCode}` : ''}
               </span>
             </div>
           </div>
         </div>
-
-        {subject.offenderUri && (
-          <div className="criminal-record">
-            <h3 className="record-title">
-              <ExternalLink size={18} className="icon" /> Criminal Record
-            </h3>
-            <a 
-              href={subject.offenderUri} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="record-link"
-            >
-              View Official Criminal Record
-            </a>
-          </div>
-        )}
       </div>
     </div>
   );

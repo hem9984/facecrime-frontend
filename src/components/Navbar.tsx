@@ -27,7 +27,6 @@ const CheckIcon: React.FC = () => (
 
 const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
   const [showCameraModal, setShowCameraModal] = useState(false);
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false); // <-- 1. Add loading state
   
   // Initialize pica instance with Lanczos filter
@@ -50,7 +49,7 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
   const handleCameraCapture = async (imageData: string) => {
     try {
       const resizedImageData = await resizeImage(imageData);
-      setCapturedImage(resizedImageData);
+      // setCapturedImage(resizedImageData); // This line is removed as per the edit hint
       onImageCapture(resizedImageData);
       await handleSearchClick(resizedImageData); // <-- Call search logic here
     } catch (error) {
@@ -61,7 +60,7 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
 
   // Refactor handleSearchClick to accept an image parameter
   const handleSearchClick = async (image?: string) => {
-    const imageToUse = image || capturedImage;
+    const imageToUse = image || null; // Use null if no image is captured
     if (!imageToUse) {
       toast.error("Please capture or upload an image first");
       return;
@@ -167,7 +166,7 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
             Drop photo(s) of the person you want to find
           </p>
 
-          <button onClick={openCameraModal}> Browse...</button>
+          <button onClick={openCameraModal}> Take a Picture...</button>
           
         </div>
         {/* 4. Loading indicator */}

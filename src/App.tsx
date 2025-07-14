@@ -9,10 +9,13 @@ const App: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [recognitionResult, setRecognitionResult] = useState<RecognitionData | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
 
   const handleImageCapture = async (image: string) => {
+    console.log("Captured image:", image); // <-- Add this line
     setRecognitionResult(null);
     setShowResult(false);
+    setCapturedImage(image); // Store the captured image
     
     // Automatically submit for recognition
     try {
@@ -36,6 +39,7 @@ const App: React.FC = () => {
   const handleBack = () => {
     setShowResult(false);
     setRecognitionResult(null);
+    setCapturedImage(null); // Clear captured image on back
   };
 
   return !showResult ? (
@@ -45,6 +49,7 @@ const App: React.FC = () => {
       subject={recognitionResult} 
       isLoading={isProcessing} 
       onBack={handleBack}
+      originalPhotoUrl={capturedImage}
     />
   );
 };
