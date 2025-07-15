@@ -144,6 +144,44 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
   const toggleFAQ = (index: number) => {
     setOpenFAQ(openFAQ === index ? null : index);
   };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      toast.error("No file selected.");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      toast.error("File size exceeds 10MB limit.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      if (e.target?.result) {
+        try {
+          const imageDataUrl = e.target.result as string;
+          const resizedImageData = await resizeImage(imageDataUrl);
+          onImageCapture(resizedImageData);
+          await handleSearchClick(resizedImageData);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          toast.error("Failed to process uploaded image.");
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Do something with the file, e.g., upload or preview
+      console.log('Selected file:', file);
+    }
+  };
+
   return (
     <div className="app-container">
       <nav className="navbar">
@@ -166,7 +204,31 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
             Drop photo(s) of the person you want to find
           </p>
 
-          <button onClick={openCameraModal}> Take a Picture...</button>
+          {/* Hide the actual file input */}
+          <input
+            type="file"
+            accept="image/*"
+            id="image-upload"
+            style={{ display: 'none' }}
+            onChange={handleImageUpload} // You need to define this handler
+          />
+          {/* Label acts as a button */}
+          <div>
+            <input
+              type="file"
+              id="file-upload"
+              style={{ display: 'none' }}
+              onChange={handleFileChange} // <-- implement this handler
+            />
+            <button
+              type="button"
+              className="custom-browse-button"
+              style={{ color: 'white', backgroundColor: '#F50057', border: 'none', padding: '8px 80px', borderRadius: '4px', cursor: 'pointer' }}
+              onClick={() => document.getElementById('file-upload')?.click()}
+            >
+              Browse...
+            </button>
+          </div>
           
         </div>
         {/* 4. Loading indicator */}
@@ -187,13 +249,13 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
             <span className="blue-text"><CheckIcon /></span><p>Mugshots</p>
           </div>
           <div className="category-item">
-            <span className="blue-text"><CheckIcon /></span><p>Scammers</p>
+            <span className="blue-text"><CheckIcon /></span><p>Pictures</p>
           </div>
           <div className="category-item">
-            <span className="blue-text"><CheckIcon /></span><p>Videos</p>
+            <span className="blue-text"><CheckIcon /></span><p>Comparisons</p>
           </div>
           <div className="category-item">
-            <span className="blue-text"><CheckIcon /></span><p>News & Blogs</p>
+            <span className="blue-text"><CheckIcon /></span><p>Matches</p>
           </div>
         </div>
         <button 
