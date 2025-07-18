@@ -4,7 +4,7 @@ import '../App.css';
 import CameraModal from './CameraModal';
 import Pica from 'pica';
 import { toast } from 'sonner';
-import { ChevronDown, ChevronUp, User, Shield, Database, Mail } from 'lucide-react';
+import { ChevronDown, ChevronUp, User, Shield, Database } from 'lucide-react';
 import posthog from 'posthog-js';
 interface CameraCaptureProps {
   onImageCapture: (image: string) => void;
@@ -175,13 +175,6 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
     reader.readAsDataURL(file);
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Do something with the file, e.g., upload or preview
-      console.log('Selected file:', file);
-    }
-  };
 
   return (
     <div className="app-container">
@@ -211,23 +204,17 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
             accept="image/*"
             id="image-upload"
             style={{ display: 'none' }}
-            onChange={handleImageUpload} // You need to define this handler
+            onChange={handleImageUpload}
           />
           {/* Label acts as a button */}
           <div>
-            <input
-              type="file"
-              id="file-upload"
-              style={{ display: 'none' }}
-              onChange={handleFileChange} // <-- implement this handler
-            />
             <button
               type="button"
               className="custom-browse-button"
               style={{ color: 'white', backgroundColor: '#F50057', border: 'none', padding: '8px 80px', borderRadius: '4px', cursor: 'pointer' }}
               onClick={() => {
                 posthog.capture('Browse Button Click', { property: 'value' }); // Capture the event
-                document.getElementById('file-upload')?.click();
+                document.getElementById('image-upload')?.click(); // <-- Change to 'image-upload'
               }}
             >
               Browse...
