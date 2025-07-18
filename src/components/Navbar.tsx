@@ -5,6 +5,7 @@ import CameraModal from './CameraModal';
 import Pica from 'pica';
 import { toast } from 'sonner';
 import { ChevronDown, ChevronUp, User, Shield, Database, Mail } from 'lucide-react';
+import posthog from 'posthog-js';
 interface CameraCaptureProps {
   onImageCapture: (image: string) => void;
 }
@@ -224,7 +225,10 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
               type="button"
               className="custom-browse-button"
               style={{ color: 'white', backgroundColor: '#F50057', border: 'none', padding: '8px 80px', borderRadius: '4px', cursor: 'pointer' }}
-              onClick={() => document.getElementById('file-upload')?.click()}
+              onClick={() => {
+                posthog.capture('Browse Button Click', { property: 'value' }); // Capture the event
+                document.getElementById('file-upload')?.click();
+              }}
             >
               Browse...
             </button>
@@ -260,7 +264,10 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
         </div>
         <button 
           className="search-button" 
-          onClick={openCameraModal}
+          onClick={() => {
+            posthog.capture('Reveal the Truth Button Click', { property: 'value' }); // PostHog event
+            openCameraModal();
+          }}
         >
           Reveal the Truth
         </button>
