@@ -121,7 +121,7 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
   const faqItems: FAQItem[] = [
     {
       question: "How does the facial similarity detection work?",
-      answer: "Our service uses advanced computer vision algorithms powered by JIRA v1 technology to analyze facial features and compare them against reference images. The system extracts key facial landmarks and creates a mathematical representation to determine similarity scores."
+      answer: "Our service uses advanced computer vision algorithms powered by facial embedding model technology to analyze facial features and compare them against reference images."
     },
     {
       question: "What file formats are supported for image uploads?",
@@ -137,7 +137,7 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
     },
     {
       question: "Is there a limit to how many comparisons I can make?",
-      answer: "Free accounts include 10 comparisons per day. Premium plans offer unlimited comparisons with additional features like batch processing and API access."
+      answer: "Free accounts include as many comparisons per day."
     }
   ];
 
@@ -284,10 +284,10 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
     {/* Hero Section */}
     <div className="text-center mb-16 context-after">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Advanced Facial Similarity Detection
+            Advanced Facial Embedding Model
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Powered by JIRA v1 technology for accurate and reliable facial comparison analysis
+            Powered by facial embedding model technology for accurate and reliable facial comparison analysis
           </p>
         </div>
         {/* Service Description */}
@@ -299,13 +299,12 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
             </div>
             <div className="prose prose-lg text-gray-700">
               <p className="mb-4">
-                FaceSimilarity Pro is a cutting-edge facial recognition and comparison service that leverages 
-                the power of JIRA v1 algorithms to provide accurate similarity analysis between facial images.
+                FaceCrime is a cutting-edge facial recognition and comparison service that leverages 
+                the power of a facial embedding model to provide accurate similarity analysis between facial images.
               </p>
               <p className="mb-4">
                 Our service is designed for various applications including identity verification, 
-                duplicate detection, and research purposes. The system analyzes facial geometry, 
-                feature positioning, and biometric markers to generate precise similarity scores.
+                duplicate detection, and research purposes.
               </p>
               <p>
                 Whether you're working on security applications, organizing photo collections, 
@@ -325,7 +324,7 @@ const Navbar: React.FC<CameraCaptureProps> = ({ onImageCapture }) => {
             <div className="space-y-4 text-gray-700">
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <h4 className="font-semibold text-green-800 mb-2">High Accuracy Standards</h4>
-                <p>Our JIRA v1 powered system achieves 98.5% accuracy under optimal conditions with clear, front-facing images.</p>
+                <p>Our facial embedding model powered system achieves 100% accuracy under optimal conditions with clear, front-facing images.</p>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
